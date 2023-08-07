@@ -4,8 +4,20 @@
  */
 package GUI;
 import Logica.*;
+import java.awt.GridLayout;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -21,7 +33,7 @@ private Cliente cliente = new Cliente(this);
      */
     public Interfaz() {
         initComponents();
-        desactivarPaneles();
+        //desactivarPaneles();
     }
     
     public void actualizarTablaProductos(String categoria) {
@@ -62,6 +74,59 @@ private Cliente cliente = new Cliente(this);
             jTabbedPane1.setEnabledAt(i, true);
         }
     }
+    
+    public void mostrarProductosEnPanel(String categoria) {
+    // Leer el archivo JSON de productos
+    JSONParser parser = new JSONParser();
+    try (FileReader reader = new FileReader(categoria + ".json")) {
+        JSONArray productosArray = (JSONArray) parser.parse(reader);
+
+        // Crear un panel para los productos
+        JPanel productosPanel = new JPanel();
+        productosPanel.setLayout(new GridLayout(0, 6));
+
+        // Iterar sobre los productos y agregarlos al panel
+        for (Object obj : productosArray) {
+            JSONObject productoJSON = (JSONObject) obj;
+
+            // Obtener los datos del producto desde el JSON
+            int idProducto = Integer.parseInt(productoJSON.get("id").toString());
+            String nombre = productoJSON.get("nombre").toString();
+            double precio = Double.parseDouble(productoJSON.get("precio").toString());
+            String presentacion = productoJSON.get("presentacion").toString();
+            String rutaImagen = productoJSON.get("RutaImagen").toString();
+
+            // Crear un panel para el producto
+            JPanel productoPanel = new JPanel();
+            productoPanel.setLayout(new BoxLayout(productoPanel, BoxLayout.Y_AXIS));
+
+            // Cargar la imagen y agregarla al panel
+            ImageIcon imagen = new ImageIcon(getClass().getResource(rutaImagen));
+            JLabel imagenLabel = new JLabel(imagen);
+            productoPanel.add(imagenLabel);
+            // Agregar etiquetas para los detalles del producto
+            productoPanel.add(new JLabel("ID: " + idProducto));
+            productoPanel.add(new JLabel("Nombre: " + nombre));
+            productoPanel.add(new JLabel("Precio: $" + precio));
+            productoPanel.add(new JLabel("Presentación: " + presentacion));
+
+            // Agregar botón de comprar
+            JButton comprarButton = new JButton("Comprar");
+            productoPanel.add(comprarButton);
+
+            // Agregar el panel del producto al panel de productos
+            productosPanel.add(productoPanel);
+        }
+
+        // Remover el contenido anterior del JScrollPane y agregar el nuevo panel de productos
+        jpnProductos.setViewportView(productosPanel);
+        // Actualizar la interfaz para reflejar los cambios
+        jpnProductos.revalidate();
+        jpnProductos.repaint();
+    } catch (IOException | ParseException e) {
+        e.printStackTrace();
+    }
+}
 
 
 
@@ -106,153 +171,8 @@ private Cliente cliente = new Cliente(this);
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProductos = new javax.swing.JTable();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jPanel55 = new javax.swing.JPanel();
-        jLabel503 = new javax.swing.JLabel();
-        jLabel504 = new javax.swing.JLabel();
-        jLabel505 = new javax.swing.JLabel();
-        jLabel506 = new javax.swing.JLabel();
-        txtCanto3 = new javax.swing.JTextField();
-        txtCantoPeso3 = new javax.swing.JTextField();
-        txtCantoPrecio3 = new javax.swing.JTextField();
-        btnCanto3 = new javax.swing.JButton();
-        btnExtruction3 = new javax.swing.JButton();
-        jLabel507 = new javax.swing.JLabel();
-        jLabel508 = new javax.swing.JLabel();
-        jLabel509 = new javax.swing.JLabel();
-        jLabel510 = new javax.swing.JLabel();
-        txtExtruction3 = new javax.swing.JTextField();
-        txtExtructionPeso3 = new javax.swing.JTextField();
-        txtExtructionPrecio3 = new javax.swing.JTextField();
-        btnGati3 = new javax.swing.JButton();
-        jLabel511 = new javax.swing.JLabel();
-        btnCobayes3 = new javax.swing.JButton();
-        jLabel512 = new javax.swing.JLabel();
-        jLabel513 = new javax.swing.JLabel();
-        jLabel514 = new javax.swing.JLabel();
-        txtGati3 = new javax.swing.JTextField();
-        txtGatiPeso3 = new javax.swing.JTextField();
-        txtGatiPrecio3 = new javax.swing.JTextField();
-        jLabel515 = new javax.swing.JLabel();
-        jLabel516 = new javax.swing.JLabel();
-        jLabel517 = new javax.swing.JLabel();
-        jLabel518 = new javax.swing.JLabel();
-        txtCobayes3 = new javax.swing.JTextField();
-        txtCobayesPeso3 = new javax.swing.JTextField();
-        txtCobayesPrecio3 = new javax.swing.JTextField();
-        jLabel519 = new javax.swing.JLabel();
-        txtRedKrite3 = new javax.swing.JTextField();
-        txtRedKritePrecio3 = new javax.swing.JTextField();
-        txtRedKritePeso3 = new javax.swing.JTextField();
-        txtSenGatPrecio3 = new javax.swing.JTextField();
-        jLabel520 = new javax.swing.JLabel();
-        jLabel521 = new javax.swing.JLabel();
-        jLabel522 = new javax.swing.JLabel();
-        jLabel523 = new javax.swing.JLabel();
-        jLabel524 = new javax.swing.JLabel();
-        txtSenGatPeso3 = new javax.swing.JTextField();
-        txtSenGat3 = new javax.swing.JTextField();
-        btnRedKrite3 = new javax.swing.JButton();
-        btntSenGat3 = new javax.swing.JButton();
-        jLabel525 = new javax.swing.JLabel();
-        jLabel526 = new javax.swing.JLabel();
-        btnTioCat78 = new javax.swing.JButton();
-        jLabel527 = new javax.swing.JLabel();
-        btnTioCat79 = new javax.swing.JButton();
-        jLabel528 = new javax.swing.JLabel();
-        jLabel529 = new javax.swing.JLabel();
-        btnTioCat80 = new javax.swing.JButton();
-        jLabel530 = new javax.swing.JLabel();
-        jLabel531 = new javax.swing.JLabel();
-        jLabel532 = new javax.swing.JLabel();
-        jLabel533 = new javax.swing.JLabel();
-        txtTioCatPeso78 = new javax.swing.JTextField();
-        jLabel534 = new javax.swing.JLabel();
-        txtTioCat78 = new javax.swing.JTextField();
-        jLabel535 = new javax.swing.JLabel();
-        txtTioCat79 = new javax.swing.JTextField();
-        btnTioCat81 = new javax.swing.JButton();
-        jLabel536 = new javax.swing.JLabel();
-        txtTioCatPeso79 = new javax.swing.JTextField();
-        btnTioCat82 = new javax.swing.JButton();
-        jLabel537 = new javax.swing.JLabel();
-        txtTioCatPrecio78 = new javax.swing.JTextField();
-        jLabel538 = new javax.swing.JLabel();
-        txtTioCat80 = new javax.swing.JTextField();
-        jLabel539 = new javax.swing.JLabel();
-        jLabel540 = new javax.swing.JLabel();
-        txtTioCatPeso80 = new javax.swing.JTextField();
-        jLabel541 = new javax.swing.JLabel();
-        txtTioCatPrecio79 = new javax.swing.JTextField();
-        jLabel542 = new javax.swing.JLabel();
-        jLabel543 = new javax.swing.JLabel();
-        txtTioCat81 = new javax.swing.JTextField();
-        jLabel544 = new javax.swing.JLabel();
-        txtTioCatPeso81 = new javax.swing.JTextField();
-        jLabel545 = new javax.swing.JLabel();
-        txtTioCatPrecio80 = new javax.swing.JTextField();
-        jLabel546 = new javax.swing.JLabel();
-        jLabel547 = new javax.swing.JLabel();
-        jLabel548 = new javax.swing.JLabel();
-        txtTioCat82 = new javax.swing.JTextField();
-        txtTioCat83 = new javax.swing.JTextField();
-        txtTioCatPrecio81 = new javax.swing.JTextField();
-        txtTioCatPeso82 = new javax.swing.JTextField();
-        txtTioCatPeso83 = new javax.swing.JTextField();
-        txtTioCatPrecio82 = new javax.swing.JTextField();
-        txtTioCatPrecio83 = new javax.swing.JTextField();
-        jLabel549 = new javax.swing.JLabel();
-        btnTioCat83 = new javax.swing.JButton();
-        jLabel550 = new javax.swing.JLabel();
-        btnTioCat84 = new javax.swing.JButton();
-        jLabel551 = new javax.swing.JLabel();
-        btnTioCat85 = new javax.swing.JButton();
-        jLabel552 = new javax.swing.JLabel();
-        jLabel553 = new javax.swing.JLabel();
-        btnTioCat86 = new javax.swing.JButton();
-        jLabel554 = new javax.swing.JLabel();
-        jLabel555 = new javax.swing.JLabel();
-        jLabel556 = new javax.swing.JLabel();
-        jLabel557 = new javax.swing.JLabel();
-        txtTioCatPeso84 = new javax.swing.JTextField();
-        jLabel558 = new javax.swing.JLabel();
-        txtTioCat84 = new javax.swing.JTextField();
-        jLabel559 = new javax.swing.JLabel();
-        txtTioCat85 = new javax.swing.JTextField();
-        btnTioCat87 = new javax.swing.JButton();
-        jLabel560 = new javax.swing.JLabel();
-        txtTioCatPeso85 = new javax.swing.JTextField();
-        btnTioCat88 = new javax.swing.JButton();
-        jLabel561 = new javax.swing.JLabel();
-        txtTioCatPrecio84 = new javax.swing.JTextField();
-        jLabel562 = new javax.swing.JLabel();
-        txtTioCat86 = new javax.swing.JTextField();
-        jLabel563 = new javax.swing.JLabel();
-        jLabel564 = new javax.swing.JLabel();
-        txtTioCatPeso86 = new javax.swing.JTextField();
-        jLabel565 = new javax.swing.JLabel();
-        txtTioCatPrecio85 = new javax.swing.JTextField();
-        jLabel566 = new javax.swing.JLabel();
-        jLabel567 = new javax.swing.JLabel();
-        txtTioCat87 = new javax.swing.JTextField();
-        jLabel568 = new javax.swing.JLabel();
-        txtTioCatPeso87 = new javax.swing.JTextField();
-        jLabel569 = new javax.swing.JLabel();
-        txtTioCatPrecio86 = new javax.swing.JTextField();
-        jLabel570 = new javax.swing.JLabel();
-        jLabel571 = new javax.swing.JLabel();
-        jLabel572 = new javax.swing.JLabel();
-        txtTioCat88 = new javax.swing.JTextField();
-        txtTioCat89 = new javax.swing.JTextField();
-        txtTioCatPrecio87 = new javax.swing.JTextField();
-        txtTioCatPeso88 = new javax.swing.JTextField();
-        txtTioCatPeso89 = new javax.swing.JTextField();
-        txtTioCatPrecio88 = new javax.swing.JTextField();
-        txtTioCatPrecio89 = new javax.swing.JTextField();
-        jLabel573 = new javax.swing.JLabel();
-        btnTioCat89 = new javax.swing.JButton();
-        jLabel574 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
+        jpnProductos = new javax.swing.JScrollPane();
+        jPanel6 = new javax.swing.JPanel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -485,7 +405,7 @@ private Cliente cliente = new Cliente(this);
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(13, 13, 13)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1293, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnVaciar)
                         .addGap(24, 24, 24))))
         );
@@ -517,1137 +437,29 @@ private Cliente cliente = new Cliente(this);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1114, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1724, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Carnes", jPanel2);
 
-        jPanel55.setBackground(new java.awt.Color(0, 0, 0));
-
-        jLabel504.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel504.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel504.setText("Producto:");
-
-        jLabel505.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel505.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel505.setText("Peso:");
-
-        jLabel506.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel506.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel506.setText("Precio:");
-
-        txtCanto3.setText("Canto");
-        txtCanto3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCanto3ActionPerformed(evt);
-            }
-        });
-
-        txtCantoPeso3.setText("13kg");
-        txtCantoPeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCantoPeso3ActionPerformed(evt);
-            }
-        });
-
-        txtCantoPrecio3.setText("2000");
-
-        jLabel508.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel508.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel508.setText("Producto:");
-
-        jLabel509.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel509.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel509.setText("Peso:");
-
-        jLabel510.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel510.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel510.setText("Precio:");
-
-        txtExtruction3.setText("Extruction");
-        txtExtruction3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExtruction3ActionPerformed(evt);
-            }
-        });
-
-        txtExtructionPeso3.setText("13kg");
-        txtExtructionPeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExtructionPeso3ActionPerformed(evt);
-            }
-        });
-
-        txtExtructionPrecio3.setText("2000");
-
-        jLabel512.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel512.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel512.setText("Producto:");
-
-        jLabel513.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel513.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel513.setText("Peso:");
-
-        jLabel514.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel514.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel514.setText("Precio:");
-
-        txtGati3.setText("Gati");
-        txtGati3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtGati3ActionPerformed(evt);
-            }
-        });
-
-        txtGatiPeso3.setText("13kg");
-        txtGatiPeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtGatiPeso3ActionPerformed(evt);
-            }
-        });
-
-        txtGatiPrecio3.setText("2000");
-
-        jLabel516.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel516.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel516.setText("Producto:");
-
-        jLabel517.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel517.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel517.setText("Peso:");
-
-        jLabel518.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel518.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel518.setText("Precio:");
-
-        txtCobayes3.setText("Cobayes");
-        txtCobayes3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCobayes3ActionPerformed(evt);
-            }
-        });
-
-        txtCobayesPeso3.setText("13kg");
-        txtCobayesPeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCobayesPeso3ActionPerformed(evt);
-            }
-        });
-
-        txtCobayesPrecio3.setText("2000");
-
-        jLabel519.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel519.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel519.setText("Producto:");
-
-        txtRedKrite3.setText("RedKrite");
-        txtRedKrite3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRedKrite3ActionPerformed(evt);
-            }
-        });
-
-        txtRedKritePrecio3.setText("3000");
-
-        txtRedKritePeso3.setText("16kg");
-        txtRedKritePeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtRedKritePeso3ActionPerformed(evt);
-            }
-        });
-
-        txtSenGatPrecio3.setText("1500");
-
-        jLabel522.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel522.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel522.setText("Precio:");
-
-        jLabel523.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel523.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel523.setText("Precio:");
-
-        jLabel524.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel524.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel524.setText("Peso:");
-
-        txtSenGatPeso3.setText("10kg");
-        txtSenGatPeso3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSenGatPeso3ActionPerformed(evt);
-            }
-        });
-
-        txtSenGat3.setText("SenGat");
-        txtSenGat3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSenGat3ActionPerformed(evt);
-            }
-        });
-
-        jLabel525.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel525.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel525.setText("Producto:");
-
-        jLabel526.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel526.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel526.setText("Peso:");
-
-        jLabel529.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel529.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel529.setText("Precio:");
-
-        jLabel530.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel530.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel530.setText("Precio:");
-
-        jLabel531.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel531.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel531.setText("Producto:");
-
-        jLabel532.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel532.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel532.setText("Peso:");
-
-        jLabel533.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel533.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel533.setText("Peso:");
-
-        txtTioCatPeso78.setText("13kg");
-        txtTioCatPeso78.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso78ActionPerformed(evt);
-            }
-        });
-
-        jLabel534.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel534.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel534.setText("Precio:");
-
-        txtTioCat78.setText("TioCat");
-        txtTioCat78.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat78ActionPerformed(evt);
-            }
-        });
-
-        jLabel535.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel535.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel535.setText("Producto:");
-
-        txtTioCat79.setText("TioCat");
-        txtTioCat79.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat79ActionPerformed(evt);
-            }
-        });
-
-        jLabel536.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel536.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel536.setText("Peso:");
-
-        txtTioCatPeso79.setText("13kg");
-        txtTioCatPeso79.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso79ActionPerformed(evt);
-            }
-        });
-
-        jLabel537.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel537.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel537.setText("Precio:");
-
-        txtTioCatPrecio78.setText("2000");
-
-        jLabel538.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel538.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel538.setText("Producto:");
-
-        txtTioCat80.setText("TioCat");
-        txtTioCat80.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat80ActionPerformed(evt);
-            }
-        });
-
-        jLabel540.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel540.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel540.setText("Peso:");
-
-        txtTioCatPeso80.setText("13kg");
-        txtTioCatPeso80.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso80ActionPerformed(evt);
-            }
-        });
-
-        jLabel541.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel541.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel541.setText("Producto:");
-
-        txtTioCatPrecio79.setText("2000");
-
-        jLabel542.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel542.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel542.setText("Peso:");
-
-        jLabel543.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel543.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel543.setText("Precio:");
-
-        txtTioCat81.setText("TioCat");
-        txtTioCat81.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat81ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPeso81.setText("13kg");
-        txtTioCatPeso81.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso81ActionPerformed(evt);
-            }
-        });
-
-        jLabel545.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel545.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel545.setText("Producto:");
-
-        txtTioCatPrecio80.setText("2000");
-
-        jLabel546.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel546.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel546.setText("Peso:");
-
-        jLabel547.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel547.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel547.setText("Producto:");
-
-        jLabel548.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel548.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel548.setText("Precio:");
-
-        txtTioCat82.setText("TioCat");
-        txtTioCat82.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat82ActionPerformed(evt);
-            }
-        });
-
-        txtTioCat83.setText("TioCat");
-        txtTioCat83.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat83ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPrecio81.setText("2000");
-
-        txtTioCatPeso82.setText("13kg");
-        txtTioCatPeso82.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso82ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPeso83.setText("13kg");
-        txtTioCatPeso83.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso83ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPrecio82.setText("2000");
-
-        txtTioCatPrecio83.setText("2000");
-
-        jLabel553.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel553.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel553.setText("Precio:");
-
-        jLabel554.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel554.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel554.setText("Precio:");
-
-        jLabel555.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel555.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel555.setText("Producto:");
-
-        jLabel556.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel556.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel556.setText("Peso:");
-
-        jLabel557.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel557.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel557.setText("Peso:");
-
-        txtTioCatPeso84.setText("13kg");
-        txtTioCatPeso84.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso84ActionPerformed(evt);
-            }
-        });
-
-        jLabel558.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel558.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel558.setText("Precio:");
-
-        txtTioCat84.setText("TioCat");
-        txtTioCat84.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat84ActionPerformed(evt);
-            }
-        });
-
-        jLabel559.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel559.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel559.setText("Producto:");
-
-        txtTioCat85.setText("TioCat");
-        txtTioCat85.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat85ActionPerformed(evt);
-            }
-        });
-
-        jLabel560.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel560.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel560.setText("Peso:");
-
-        txtTioCatPeso85.setText("13kg");
-        txtTioCatPeso85.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso85ActionPerformed(evt);
-            }
-        });
-
-        jLabel561.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel561.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel561.setText("Precio:");
-
-        txtTioCatPrecio84.setText("2000");
-
-        jLabel562.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel562.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel562.setText("Producto:");
-
-        txtTioCat86.setText("TioCat");
-        txtTioCat86.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat86ActionPerformed(evt);
-            }
-        });
-
-        jLabel564.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel564.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel564.setText("Peso:");
-
-        txtTioCatPeso86.setText("13kg");
-        txtTioCatPeso86.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso86ActionPerformed(evt);
-            }
-        });
-
-        jLabel565.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel565.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel565.setText("Producto:");
-
-        txtTioCatPrecio85.setText("2000");
-
-        jLabel566.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel566.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel566.setText("Peso:");
-
-        jLabel567.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel567.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel567.setText("Precio:");
-
-        txtTioCat87.setText("TioCat");
-        txtTioCat87.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat87ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPeso87.setText("13kg");
-        txtTioCatPeso87.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso87ActionPerformed(evt);
-            }
-        });
-
-        jLabel569.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel569.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel569.setText("Producto:");
-
-        txtTioCatPrecio86.setText("2000");
-
-        jLabel570.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel570.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel570.setText("Peso:");
-
-        jLabel571.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel571.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel571.setText("Producto:");
-
-        jLabel572.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel572.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel572.setText("Precio:");
-
-        txtTioCat88.setText("TioCat");
-        txtTioCat88.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat88ActionPerformed(evt);
-            }
-        });
-
-        txtTioCat89.setText("TioCat");
-        txtTioCat89.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCat89ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPrecio87.setText("2000");
-
-        txtTioCatPeso88.setText("13kg");
-        txtTioCatPeso88.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso88ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPeso89.setText("13kg");
-        txtTioCatPeso89.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTioCatPeso89ActionPerformed(evt);
-            }
-        });
-
-        txtTioCatPrecio88.setText("2000");
-
-        txtTioCatPrecio89.setText("2000");
-
-        javax.swing.GroupLayout jPanel55Layout = new javax.swing.GroupLayout(jPanel55);
-        jPanel55.setLayout(jPanel55Layout);
-        jPanel55Layout.setHorizontalGroup(
-            jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel55Layout.createSequentialGroup()
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnCanto3)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel506, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel504, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel505, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCantoPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCanto3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCantoPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel503, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat79)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel548, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel545, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel546, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso82, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat83, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio82, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel544, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(btnTioCat85)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel572, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel569, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jLabel570, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso88, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTioCat89, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTioCatPrecio88, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel568, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnExtruction3)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel510, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel508, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jLabel509, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtExtructionPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtExtruction3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtExtructionPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnTioCat78)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel537, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel535, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(jLabel536, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso80, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTioCat80, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTioCatPrecio79, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnTioCat84)
-                        .addGroup(jPanel55Layout.createSequentialGroup()
-                            .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel561, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel559, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addComponent(jLabel560, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtTioCatPeso86, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtTioCat86, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtTioCatPrecio85, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(jPanel55Layout.createSequentialGroup()
-                            .addGap(24, 24, 24)
-                            .addComponent(jLabel551, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel507, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel527, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(59, 59, 59)
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnCobayes3)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel518, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel516, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel517, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtCobayesPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCobayes3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtCobayesPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel515, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(68, 68, 68)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnGati3)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel514, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel512, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel513, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtGatiPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtGati3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtGatiPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel511, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btntSenGat3)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel522, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel525, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel526, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtSenGatPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSenGat3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSenGatPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel520, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(39, 39, 39)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnRedKrite3)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel523, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel519, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel524, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtRedKritePeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtRedKrite3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtRedKritePrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel521, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat80)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel543, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel541, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel542, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso81, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat81, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio80, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel539, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(68, 68, 68)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat83)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel534, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel531, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel533, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso79, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat79, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio78, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel550, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat82)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel529, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel538, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel540, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso78, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat78, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio83, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel549, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(39, 39, 39)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat81)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel530, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel547, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel532, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso83, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat82, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio81, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel528, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel55Layout.createSequentialGroup()
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat86)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel567, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel565, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel566, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso87, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat87, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio86, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel563, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(68, 68, 68)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat89)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel558, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel555, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel557, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso85, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat85, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio84, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel574, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat88)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel553, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel562, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel564, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso84, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat84, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio89, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel573, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(39, 39, 39)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTioCat87)
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel554, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel571, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addComponent(jLabel556, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTioCatPeso89, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCat88, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtTioCatPrecio87, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel55Layout.createSequentialGroup()
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel552, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
         );
-        jPanel55Layout.setVerticalGroup(
-            jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel55Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel521, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel519)
-                            .addComponent(txtRedKrite3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtRedKritePeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel524))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel523)
-                            .addComponent(txtRedKritePrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnRedKrite3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel520, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel525)
-                            .addComponent(txtSenGat3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtSenGatPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel526))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel522)
-                            .addComponent(txtSenGatPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btntSenGat3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel511, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel512)
-                            .addComponent(txtGati3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtGatiPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel513))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel514)
-                            .addComponent(txtGatiPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGati3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel515, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel516)
-                            .addComponent(txtCobayes3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCobayesPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel517))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel518)
-                            .addComponent(txtCobayesPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCobayes3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel507, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel508)
-                            .addComponent(txtExtruction3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtExtructionPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel509))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel510)
-                            .addComponent(txtExtructionPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnExtruction3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel503, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel504)
-                            .addComponent(txtCanto3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtCantoPeso3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel505))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel506)
-                            .addComponent(txtCantoPrecio3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCanto3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel528, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel547)
-                            .addComponent(txtTioCat82, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso83, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel532))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel530)
-                            .addComponent(txtTioCatPrecio81, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat81, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel549, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel538)
-                            .addComponent(txtTioCat78, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso78, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel540))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel529)
-                            .addComponent(txtTioCatPrecio83, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat82, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel550, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel531)
-                            .addComponent(txtTioCat79, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso79, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel533))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel534)
-                            .addComponent(txtTioCatPrecio78, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat83, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel539, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel541)
-                            .addComponent(txtTioCat81, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso81, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel542))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel543)
-                            .addComponent(txtTioCatPrecio80, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat80, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel527, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel535)
-                            .addComponent(txtTioCat80, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso80, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel536))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel537)
-                            .addComponent(txtTioCatPrecio79, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat78, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel544, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel545)
-                            .addComponent(txtTioCat83, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso82, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel546))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel548)
-                            .addComponent(txtTioCatPrecio82, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat79, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(36, 36, 36)
-                .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel552, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel571)
-                            .addComponent(txtTioCat88, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso89, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel556))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel554)
-                            .addComponent(txtTioCatPrecio87, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat87, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel573, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel562)
-                            .addComponent(txtTioCat84, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso84, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel564))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel553)
-                            .addComponent(txtTioCatPrecio89, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat88, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel574, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel555)
-                            .addComponent(txtTioCat85, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso85, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel557))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel558)
-                            .addComponent(txtTioCatPrecio84, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat89, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel563, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel565)
-                            .addComponent(txtTioCat87, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso87, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel566))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel567)
-                            .addComponent(txtTioCatPrecio86, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat86, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel551, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel559)
-                            .addComponent(txtTioCat86, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso86, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel560))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel561)
-                            .addComponent(txtTioCatPrecio85, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat84, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel55Layout.createSequentialGroup()
-                        .addComponent(jLabel568, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel569)
-                            .addComponent(txtTioCat89, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTioCatPeso88, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel570))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel572)
-                            .addComponent(txtTioCatPrecio88, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnTioCat85, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(1040, Short.MAX_VALUE))
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 435, Short.MAX_VALUE)
         );
 
-        jScrollPane4.setViewportView(jPanel55);
+        jpnProductos.setViewportView(jPanel6);
 
-        jTabbedPane1.addTab("tab3", jScrollPane4);
-        jTabbedPane1.addTab("tab4", jScrollPane5);
+        jTabbedPane1.addTab("Producto", jpnProductos);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1655,8 +467,8 @@ private Cliente cliente = new Cliente(this);
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 991, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1670,7 +482,7 @@ private Cliente cliente = new Cliente(this);
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1761,251 +573,17 @@ private Cliente cliente = new Cliente(this);
         }
     }//GEN-LAST:event_btnAñadirClienteActionPerformed
 
-    private void txtCanto3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCanto3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCanto3ActionPerformed
-
-    private void txtCantoPeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantoPeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantoPeso3ActionPerformed
-
-    private void txtExtruction3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExtruction3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtExtruction3ActionPerformed
-
-    private void txtExtructionPeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExtructionPeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtExtructionPeso3ActionPerformed
-
-    private void txtGati3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGati3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGati3ActionPerformed
-
-    private void txtGatiPeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGatiPeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGatiPeso3ActionPerformed
-
-    private void txtCobayes3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCobayes3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCobayes3ActionPerformed
-
-    private void txtCobayesPeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCobayesPeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCobayesPeso3ActionPerformed
-
-    private void txtRedKrite3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRedKrite3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRedKrite3ActionPerformed
-
-    private void txtRedKritePeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRedKritePeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRedKritePeso3ActionPerformed
-
-    private void txtSenGatPeso3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSenGatPeso3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSenGatPeso3ActionPerformed
-
-    private void txtSenGat3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSenGat3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSenGat3ActionPerformed
-
-    private void txtTioCatPeso78ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso78ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso78ActionPerformed
-
-    private void txtTioCat78ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat78ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat78ActionPerformed
-
-    private void txtTioCat79ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat79ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat79ActionPerformed
-
-    private void txtTioCatPeso79ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso79ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso79ActionPerformed
-
-    private void txtTioCat80ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat80ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat80ActionPerformed
-
-    private void txtTioCatPeso80ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso80ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso80ActionPerformed
-
-    private void txtTioCat81ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat81ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat81ActionPerformed
-
-    private void txtTioCatPeso81ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso81ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso81ActionPerformed
-
-    private void txtTioCat82ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat82ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat82ActionPerformed
-
-    private void txtTioCat83ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat83ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat83ActionPerformed
-
-    private void txtTioCatPeso82ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso82ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso82ActionPerformed
-
-    private void txtTioCatPeso83ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso83ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso83ActionPerformed
-
-    private void txtTioCatPeso84ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso84ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso84ActionPerformed
-
-    private void txtTioCat84ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat84ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat84ActionPerformed
-
-    private void txtTioCat85ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat85ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat85ActionPerformed
-
-    private void txtTioCatPeso85ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso85ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso85ActionPerformed
-
-    private void txtTioCat86ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat86ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat86ActionPerformed
-
-    private void txtTioCatPeso86ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso86ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso86ActionPerformed
-
-    private void txtTioCat87ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat87ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat87ActionPerformed
-
-    private void txtTioCatPeso87ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso87ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso87ActionPerformed
-
-    private void txtTioCat88ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat88ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat88ActionPerformed
-
-    private void txtTioCat89ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCat89ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCat89ActionPerformed
-
-    private void txtTioCatPeso88ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso88ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso88ActionPerformed
-
-    private void txtTioCatPeso89ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTioCatPeso89ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTioCatPeso89ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAñadirCliente;
-    private javax.swing.JButton btnCanto3;
-    private javax.swing.JButton btnCobayes3;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnExtruction3;
-    private javax.swing.JButton btnGati3;
-    private javax.swing.JButton btnRedKrite3;
-    private javax.swing.JButton btnTioCat78;
-    private javax.swing.JButton btnTioCat79;
-    private javax.swing.JButton btnTioCat80;
-    private javax.swing.JButton btnTioCat81;
-    private javax.swing.JButton btnTioCat82;
-    private javax.swing.JButton btnTioCat83;
-    private javax.swing.JButton btnTioCat84;
-    private javax.swing.JButton btnTioCat85;
-    private javax.swing.JButton btnTioCat86;
-    private javax.swing.JButton btnTioCat87;
-    private javax.swing.JButton btnTioCat88;
-    private javax.swing.JButton btnTioCat89;
     private javax.swing.JButton btnVaciar;
-    private javax.swing.JButton btntSenGat3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel503;
-    private javax.swing.JLabel jLabel504;
-    private javax.swing.JLabel jLabel505;
-    private javax.swing.JLabel jLabel506;
-    private javax.swing.JLabel jLabel507;
-    private javax.swing.JLabel jLabel508;
-    private javax.swing.JLabel jLabel509;
-    private javax.swing.JLabel jLabel510;
-    private javax.swing.JLabel jLabel511;
-    private javax.swing.JLabel jLabel512;
-    private javax.swing.JLabel jLabel513;
-    private javax.swing.JLabel jLabel514;
-    private javax.swing.JLabel jLabel515;
-    private javax.swing.JLabel jLabel516;
-    private javax.swing.JLabel jLabel517;
-    private javax.swing.JLabel jLabel518;
-    private javax.swing.JLabel jLabel519;
-    private javax.swing.JLabel jLabel520;
-    private javax.swing.JLabel jLabel521;
-    private javax.swing.JLabel jLabel522;
-    private javax.swing.JLabel jLabel523;
-    private javax.swing.JLabel jLabel524;
-    private javax.swing.JLabel jLabel525;
-    private javax.swing.JLabel jLabel526;
-    private javax.swing.JLabel jLabel527;
-    private javax.swing.JLabel jLabel528;
-    private javax.swing.JLabel jLabel529;
-    private javax.swing.JLabel jLabel530;
-    private javax.swing.JLabel jLabel531;
-    private javax.swing.JLabel jLabel532;
-    private javax.swing.JLabel jLabel533;
-    private javax.swing.JLabel jLabel534;
-    private javax.swing.JLabel jLabel535;
-    private javax.swing.JLabel jLabel536;
-    private javax.swing.JLabel jLabel537;
-    private javax.swing.JLabel jLabel538;
-    private javax.swing.JLabel jLabel539;
-    private javax.swing.JLabel jLabel540;
-    private javax.swing.JLabel jLabel541;
-    private javax.swing.JLabel jLabel542;
-    private javax.swing.JLabel jLabel543;
-    private javax.swing.JLabel jLabel544;
-    private javax.swing.JLabel jLabel545;
-    private javax.swing.JLabel jLabel546;
-    private javax.swing.JLabel jLabel547;
-    private javax.swing.JLabel jLabel548;
-    private javax.swing.JLabel jLabel549;
-    private javax.swing.JLabel jLabel550;
-    private javax.swing.JLabel jLabel551;
-    private javax.swing.JLabel jLabel552;
-    private javax.swing.JLabel jLabel553;
-    private javax.swing.JLabel jLabel554;
-    private javax.swing.JLabel jLabel555;
-    private javax.swing.JLabel jLabel556;
-    private javax.swing.JLabel jLabel557;
-    private javax.swing.JLabel jLabel558;
-    private javax.swing.JLabel jLabel559;
-    private javax.swing.JLabel jLabel560;
-    private javax.swing.JLabel jLabel561;
-    private javax.swing.JLabel jLabel562;
-    private javax.swing.JLabel jLabel563;
-    private javax.swing.JLabel jLabel564;
-    private javax.swing.JLabel jLabel565;
-    private javax.swing.JLabel jLabel566;
-    private javax.swing.JLabel jLabel567;
-    private javax.swing.JLabel jLabel568;
-    private javax.swing.JLabel jLabel569;
-    private javax.swing.JLabel jLabel570;
-    private javax.swing.JLabel jLabel571;
-    private javax.swing.JLabel jLabel572;
-    private javax.swing.JLabel jLabel573;
-    private javax.swing.JLabel jLabel574;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -2014,77 +592,22 @@ private Cliente cliente = new Cliente(this);
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel55;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jpnProductos;
     private javax.swing.JTable tblClientes;
     private javax.swing.JTable tblProductos;
     private javax.swing.JTextField txtActualizar;
-    private javax.swing.JTextField txtCanto3;
-    private javax.swing.JTextField txtCantoPeso3;
-    private javax.swing.JTextField txtCantoPrecio3;
     private javax.swing.JTextField txtCedula;
-    private javax.swing.JTextField txtCobayes3;
-    private javax.swing.JTextField txtCobayesPeso3;
-    private javax.swing.JTextField txtCobayesPrecio3;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtEliminar;
-    private javax.swing.JTextField txtExtruction3;
-    private javax.swing.JTextField txtExtructionPeso3;
-    private javax.swing.JTextField txtExtructionPrecio3;
-    private javax.swing.JTextField txtGati3;
-    private javax.swing.JTextField txtGatiPeso3;
-    private javax.swing.JTextField txtGatiPrecio3;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrimerA;
-    private javax.swing.JTextField txtRedKrite3;
-    private javax.swing.JTextField txtRedKritePeso3;
-    private javax.swing.JTextField txtRedKritePrecio3;
     private javax.swing.JTextField txtSegundoA;
-    private javax.swing.JTextField txtSenGat3;
-    private javax.swing.JTextField txtSenGatPeso3;
-    private javax.swing.JTextField txtSenGatPrecio3;
     private javax.swing.JTextField txtTelefono;
-    private javax.swing.JTextField txtTioCat78;
-    private javax.swing.JTextField txtTioCat79;
-    private javax.swing.JTextField txtTioCat80;
-    private javax.swing.JTextField txtTioCat81;
-    private javax.swing.JTextField txtTioCat82;
-    private javax.swing.JTextField txtTioCat83;
-    private javax.swing.JTextField txtTioCat84;
-    private javax.swing.JTextField txtTioCat85;
-    private javax.swing.JTextField txtTioCat86;
-    private javax.swing.JTextField txtTioCat87;
-    private javax.swing.JTextField txtTioCat88;
-    private javax.swing.JTextField txtTioCat89;
-    private javax.swing.JTextField txtTioCatPeso78;
-    private javax.swing.JTextField txtTioCatPeso79;
-    private javax.swing.JTextField txtTioCatPeso80;
-    private javax.swing.JTextField txtTioCatPeso81;
-    private javax.swing.JTextField txtTioCatPeso82;
-    private javax.swing.JTextField txtTioCatPeso83;
-    private javax.swing.JTextField txtTioCatPeso84;
-    private javax.swing.JTextField txtTioCatPeso85;
-    private javax.swing.JTextField txtTioCatPeso86;
-    private javax.swing.JTextField txtTioCatPeso87;
-    private javax.swing.JTextField txtTioCatPeso88;
-    private javax.swing.JTextField txtTioCatPeso89;
-    private javax.swing.JTextField txtTioCatPrecio78;
-    private javax.swing.JTextField txtTioCatPrecio79;
-    private javax.swing.JTextField txtTioCatPrecio80;
-    private javax.swing.JTextField txtTioCatPrecio81;
-    private javax.swing.JTextField txtTioCatPrecio82;
-    private javax.swing.JTextField txtTioCatPrecio83;
-    private javax.swing.JTextField txtTioCatPrecio84;
-    private javax.swing.JTextField txtTioCatPrecio85;
-    private javax.swing.JTextField txtTioCatPrecio86;
-    private javax.swing.JTextField txtTioCatPrecio87;
-    private javax.swing.JTextField txtTioCatPrecio88;
-    private javax.swing.JTextField txtTioCatPrecio89;
     // End of variables declaration//GEN-END:variables
 }

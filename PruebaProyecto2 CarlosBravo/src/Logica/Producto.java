@@ -21,6 +21,7 @@ public class Producto {
     private int id_proveedor;
     private int id_categoria;
     private int id_marca;
+    private String rutaImagen;
 
     /**
      * @return the id
@@ -158,6 +159,7 @@ public class Producto {
             productoJSON.put("id_proveedor", id_proveedor);
             productoJSON.put("id_categoria", id_categoria);
             productoJSON.put("id_marca", id_marca);
+            productoJSON.put("RutaImagen", rutaImagen);
 
             // Agregar el nuevo producto al array de productos
             productosArray.add(productoJSON);
@@ -237,5 +239,19 @@ public class Producto {
         } catch (IOException | ParseException e) {
             // Manejo de excepciones (opcional)
         }
+    }
+
+    /**
+     * @return the rutaImagen
+     */
+    public String getRutaImagen() {
+        return rutaImagen;
+    }
+
+    /**
+     * @param rutaImagen the rutaImagen to set
+     */
+    public void setRutaImagen(String rutaImagen) {
+        this.rutaImagen = rutaImagen;
     }
 }
