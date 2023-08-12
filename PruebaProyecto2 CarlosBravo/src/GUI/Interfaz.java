@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -34,6 +36,7 @@ private Cliente cliente = new Cliente(this);
     public Interfaz() {
         initComponents();
         //desactivarPaneles();
+        
     }
     
     public void actualizarTablaProductos(String categoria) {
@@ -51,7 +54,6 @@ private Cliente cliente = new Cliente(this);
         this.txtSegundoA.setText("");
         this.txtTelefono.setText("");
         this.txtCorreo.setText("");
-        this.txtEliminar.setText("");
     }
     
     // Método para verificar si los campos están vacíos
@@ -127,9 +129,6 @@ private Cliente cliente = new Cliente(this);
         e.printStackTrace();
     }
 }
-
-
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -161,11 +160,9 @@ private Cliente cliente = new Cliente(this);
         txtTelefono = new javax.swing.JTextField();
         btnVaciar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        txtEliminar = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
-        txtActualizar = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         btnActualizar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -192,11 +189,16 @@ private Cliente cliente = new Cliente(this);
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, true, true, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tblClientes.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                tblClientesPropertyChange(evt);
             }
         });
         jScrollPane2.setViewportView(tblClientes);
@@ -241,12 +243,6 @@ private Cliente cliente = new Cliente(this);
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Eliminar Cliente"));
 
-        txtEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEliminarActionPerformed(evt);
-            }
-        });
-
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -264,30 +260,20 @@ private Cliente cliente = new Cliente(this);
                 .addContainerGap()
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtEliminar))
+                .addComponent(btnEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                .addGap(25, 25, 25)
+                .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEliminar)
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Actualizar Cliente"));
-
-        txtActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtActualizarActionPerformed(evt);
-            }
-        });
 
         jLabel8.setText("ID");
 
@@ -306,8 +292,6 @@ private Cliente cliente = new Cliente(this);
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -317,10 +301,8 @@ private Cliente cliente = new Cliente(this);
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
+                .addGap(23, 23, 23)
+                .addComponent(jLabel8)
                 .addGap(18, 18, 18)
                 .addComponent(btnActualizar)
                 .addContainerGap(17, Short.MAX_VALUE))
@@ -493,38 +475,53 @@ private Cliente cliente = new Cliente(this);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        int idClienteAActualizar = Integer.parseInt(txtActualizar.getText());
-        cliente.actualizar_cliente(
-            idClienteAActualizar,
-            txtCedula.getText(),
-            txtNombre.getText(),
-            txtPrimerA.getText(),
-            txtSegundoA.getText(),
-            txtTelefono.getText(),
-            txtCorreo.getText()
-        );
-        // Actualizar la tabla después de la actualización
-        actualizarTablaCliente();
-        limpiarCampos();
+        int selectedRow = tblClientes.getSelectedRow();
+        if (selectedRow != -1) {
+        String cedula = tblClientes.getValueAt(selectedRow, 1).toString();
+        String nombre = tblClientes.getValueAt(selectedRow, 2).toString();
+        String primerA = tblClientes.getValueAt(selectedRow, 3).toString();
+        String segundoA = tblClientes.getValueAt(selectedRow, 4).toString();
+        String telefono = tblClientes.getValueAt(selectedRow, 5).toString();
+        String correo = tblClientes.getValueAt(selectedRow, 6).toString();
+        if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre) && Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
+            // Obtén el id del cliente seleccionado
+            int idClienteAActualizar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
+            // Actualiza el cliente con la información de la tabla
+            cliente.actualizar_cliente(
+                idClienteAActualizar,
+                cedula,
+                nombre,
+                primerA,
+                segundoA,
+                telefono,
+                correo
+            );
+            // Actualizar la tabla después de la actualización
+            actualizarTablaCliente();
+            // Limpiar campos y mostrar mensaje de éxito
+            limpiarCampos();
+            JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.");
+        } else {
+            // Mostrar un mensaje de error para los datos no válidos
+            JOptionPane.showMessageDialog(this, "Los datos ingresados no son válidos.");
+        }
+    } else {
+        // Mostrar un mensaje de error para la selección
+        JOptionPane.showMessageDialog(this, "Seleccione un cliente para actualizar.");
+    }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void txtActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActualizarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtActualizarActionPerformed
-
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // Ejemplo de uso del método eliminar_cliente en la clase Cliente:
-        int idClienteAEliminar = Integer.parseInt(txtEliminar.getText());
+        int selectedRow = tblClientes.getSelectedRow();
+        if (selectedRow != -1) {
+        int idClienteAEliminar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
         cliente.eliminar_cliente(idClienteAEliminar);
 
         // Actualizar la tabla después de eliminar el cliente
         actualizarTablaCliente();
         limpiarCampos();
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void txtEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEliminarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEliminarActionPerformed
 
     private void btnVaciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVaciarActionPerformed
         cliente.vaciarClientes();
@@ -543,13 +540,13 @@ private Cliente cliente = new Cliente(this);
         // Obtener los datos ingresados en los campos de texto
         String cedula = txtCedula.getText();
         String nombre = txtNombre.getText();
-        String primerApellido = txtPrimerA.getText();
-        String segundoApellido = txtSegundoA.getText();
+        String primerA = txtPrimerA.getText();
+        String segundoA = txtSegundoA.getText();
         String telefono = txtTelefono.getText();
         String correo = txtCorreo.getText();
 
         // Verificar que los campos no estén vacíos
-        if (camposVacios(cedula, nombre, primerApellido, segundoApellido, telefono, correo)) {
+        if (camposVacios(cedula, nombre, primerA, segundoA, telefono, correo)) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -559,19 +556,33 @@ private Cliente cliente = new Cliente(this);
         nuevoCliente.setId(idAleatorio);
         nuevoCliente.setCedula(cedula);
         nuevoCliente.setNombre(nombre);
-        nuevoCliente.setPrimer_apellido(primerApellido);
-        nuevoCliente.setSegundo_apellido(segundoApellido);
+        nuevoCliente.setPrimer_apellido(primerA);
+        nuevoCliente.setSegundo_apellido(segundoA);
         nuevoCliente.setTelefono(telefono);
         nuevoCliente.setCorreo(correo);
 
         // Guardar el cliente y actualizar la tabla solo si la validación fue exitosa
-        if (nuevoCliente.validar_cliente(nuevoCliente.getCedula())) {
+        if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre)&& Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
             nuevoCliente.guardarCliente();
             actualizarTablaCliente();
             limpiarCampos();
             activarPaneles();
+            } else {
+        JOptionPane.showMessageDialog(this, "Algunos datos ingresados no son válidos: ");
+ 
         }
     }//GEN-LAST:event_btnAñadirClienteActionPerformed
+
+    private void tblClientesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblClientesPropertyChange
+                                         
+    int row = tblClientes.getSelectedRow();
+    int column = tblClientes.getSelectedColumn();
+    if (column != -1 && row != -1) {
+        String newValue = tblClientes.getValueAt(row, column).toString();
+        String columnName = tblClientes.getColumnName(column);
+        tblClientes.getModel().setValueAt(newValue, row, column);
+    }
+    }//GEN-LAST:event_tblClientesPropertyChange
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -601,10 +612,8 @@ private Cliente cliente = new Cliente(this);
     private javax.swing.JScrollPane jpnProductos;
     private javax.swing.JTable tblClientes;
     private javax.swing.JTable tblProductos;
-    private javax.swing.JTextField txtActualizar;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtCorreo;
-    private javax.swing.JTextField txtEliminar;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrimerA;
     private javax.swing.JTextField txtSegundoA;
