@@ -211,6 +211,7 @@ public class Producto {
         System.out.println(productosArray.toJSONString());
         
         } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
     }
     
@@ -237,7 +238,7 @@ public class Producto {
                 modeloTabla.addRow(new Object[]{Id, Nombre, Precio, Presentacion, Id_proveedor, Id_categoria, Id_marca});
             }
         } catch (IOException | ParseException e) {
-            // Manejo de excepciones (opcional)
+            e.printStackTrace();
         }
     }
 
