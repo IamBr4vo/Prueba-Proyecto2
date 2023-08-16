@@ -3,18 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI;
+
 import Logica.*;
 import java.awt.GridLayout;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableModelEvent;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,8 +28,9 @@ import org.json.simple.parser.ParseException;
  */
 public class Interfaz extends javax.swing.JFrame {
 
-private Producto producto = new Producto();
-private Cliente cliente = new Cliente(this);
+    private Producto producto = new Producto();
+    private Cliente cliente = new Cliente(this);
+    private JSONObject rootObject;
 
     /**
      * Creates new form Interfaz
@@ -36,18 +38,52 @@ private Cliente cliente = new Cliente(this);
     public Interfaz() {
         initComponents();
         //desactivarPaneles();
-        
+        JSONParser parser = new JSONParser();
+        try {
+            rootObject = (JSONObject) parser.parse(new FileReader("C:/Users/Bravo/Documents/Prueba-Proyecto2/PruebaProyecto2 CarlosBravo/src/Logica/Productos.json"));
+            System.out.print("Productos agregados al panel");
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        llenarTablas();
     }
-    
-    public void actualizarTablaProductos(String categoria) {
-        producto.actualizarTabla((DefaultTableModel) tblProductos.getModel(), categoria);
+
+    private void llenarTablas() {
+        JTable[] tablas = {tblPollo, tblRes, tblCerdo, tblMariscos, tblFrutas, tblVerduras, tblEmbutidos};
+
+        for (JTable tabla : tablas) {
+            DefaultTableModel modeloTabla = (DefaultTableModel) tabla.getModel();
+            modeloTabla.setRowCount(0);
+            producto.actualizarTabla(modeloTabla, obtenerCategoriaPorTabla(tabla));
+        }
     }
-     
+
+    private String obtenerCategoriaPorTabla(JTable tabla) {
+        if (tabla == tblPollo) {
+            System.out.print("Productos agregados al panel pllo");
+            return "Pollo";
+        } else if (tabla == tblRes) {
+            return "Res";
+        } else if (tabla == tblCerdo) {
+            return "Cerdo";
+        } else if (tabla == tblMariscos) {
+            return "Mariscos";
+        } else if (tabla == tblFrutas) {
+            return "Frutas";
+        } else if (tabla == tblVerduras) {
+            return "Verduras";
+        } else if (tabla == tblEmbutidos) {
+            return "Embutidos";
+        } else {
+            return "";
+        }
+    }
+
     public void actualizarTablaCliente() {
         cliente.actualizarTabla((DefaultTableModel) tblClientes.getModel());
     }
-    
-    private void limpiarCampos(){
+
+    private void limpiarCampos() {
         this.txtCedula.setText("");
         this.txtNombre.setText("");
         this.txtPrimerA.setText("");
@@ -55,7 +91,7 @@ private Cliente cliente = new Cliente(this);
         this.txtTelefono.setText("");
         this.txtCorreo.setText("");
     }
-    
+
     // Método para verificar si los campos están vacíos
     private boolean camposVacios(String... campos) {
         for (String campo : campos) {
@@ -65,6 +101,7 @@ private Cliente cliente = new Cliente(this);
         }
         return false;
     }
+
     private void desactivarPaneles() {
         for (int i = 1; i < jTabbedPane1.getTabCount(); i++) {
             jTabbedPane1.setEnabledAt(i, false);
@@ -76,59 +113,83 @@ private Cliente cliente = new Cliente(this);
             jTabbedPane1.setEnabledAt(i, true);
         }
     }
-    
-    public void mostrarProductosEnPanel(String categoria) {
-    // Leer el archivo JSON de productos
-    JSONParser parser = new JSONParser();
-    try (FileReader reader = new FileReader(categoria + ".json")) {
-        JSONArray productosArray = (JSONArray) parser.parse(reader);
 
-        // Crear un panel para los productos
-        JPanel productosPanel = new JPanel();
-        productosPanel.setLayout(new GridLayout(0, 6));
+    public void mostrarProductosEnPaneles(String categoria) {
+        JSONObject categoriasObject = (JSONObject) rootObject.get("categorias");
+        JSONObject categoriaObject = (JSONObject) categoriasObject.get(categoria);
+        JSONObject subcategoriasObject = (JSONObject) categoriaObject.get("subcategorias");
 
-        // Iterar sobre los productos y agregarlos al panel
-        for (Object obj : productosArray) {
-            JSONObject productoJSON = (JSONObject) obj;
+        JPanel categoriaPanel = obtenerPanelPorCategoria(categoria);
+        categoriaPanel.setLayout(new GridLayout(0, 6));
 
-            // Obtener los datos del producto desde el JSON
-            int idProducto = Integer.parseInt(productoJSON.get("id").toString());
-            String nombre = productoJSON.get("nombre").toString();
-            double precio = Double.parseDouble(productoJSON.get("precio").toString());
-            String presentacion = productoJSON.get("presentacion").toString();
-            String rutaImagen = productoJSON.get("RutaImagen").toString();
+        for (Object subcategoriaKey : subcategoriasObject.keySet()) {
+            JSONArray productosArray = (JSONArray) subcategoriasObject.get(subcategoriaKey);
 
-            // Crear un panel para el producto
-            JPanel productoPanel = new JPanel();
-            productoPanel.setLayout(new BoxLayout(productoPanel, BoxLayout.Y_AXIS));
-
-            // Cargar la imagen y agregarla al panel
-            ImageIcon imagen = new ImageIcon(getClass().getResource(rutaImagen));
-            JLabel imagenLabel = new JLabel(imagen);
-            productoPanel.add(imagenLabel);
-            // Agregar etiquetas para los detalles del producto
-            productoPanel.add(new JLabel("ID: " + idProducto));
-            productoPanel.add(new JLabel("Nombre: " + nombre));
-            productoPanel.add(new JLabel("Precio: $" + precio));
-            productoPanel.add(new JLabel("Presentación: " + presentacion));
-
-            // Agregar botón de comprar
-            JButton comprarButton = new JButton("Comprar");
-            productoPanel.add(comprarButton);
-
-            // Agregar el panel del producto al panel de productos
-            productosPanel.add(productoPanel);
+            for (Object obj : productosArray) {
+                JSONObject productoJSON = (JSONObject) obj;
+                JPanel productoPanel = crearPanelProducto(productoJSON);
+                categoriaPanel.add(productoPanel);
+            }
         }
 
-        // Remover el contenido anterior del JScrollPane y agregar el nuevo panel de productos
-        jpnProductos.setViewportView(productosPanel);
-        // Actualizar la interfaz para reflejar los cambios
-        jpnProductos.revalidate();
-        jpnProductos.repaint();
-    } catch (IOException | ParseException e) {
-        e.printStackTrace();
+        categoriaPanel.revalidate();
+        categoriaPanel.repaint();
     }
-}
+
+    private JPanel obtenerPanelPorCategoria(String categoria) {
+        if (categoria.equals("Pollo")) {
+            return jpPollo;
+        } else if (categoria.equals("Res")) {
+            return jpRes;
+        } else if (categoria.equals("Cerdo")) {
+            return jpCerdo;
+        } else if (categoria.equals("Mariscos")) {
+            return jpMariscos;
+        } else if (categoria.equals("Frutas")) {
+            return jpFrutas;
+        } else if (categoria.equals("Verduras")) {
+            return jpVerduras;
+        } else if (categoria.equals("Embutidos")) {
+            return jpEmbutidos;
+        } else {
+            return new JPanel(); // Manejar este caso según tus necesidades
+        }
+    }
+
+    private JPanel crearPanelProducto(JSONObject productoJSON) {
+        JPanel productoPanel = new JPanel();
+        productoPanel.setLayout(new BoxLayout(productoPanel, BoxLayout.Y_AXIS));
+
+        // Obtener los datos del producto desde el JSON
+        int idProducto = Integer.parseInt(productoJSON.get("id").toString());
+        String nombre = productoJSON.get("nombre").toString();
+        double precio = Double.parseDouble(productoJSON.get("precio").toString());
+        String presentacion = productoJSON.get("presentacion").toString();
+        String rutaImagen = productoJSON.get("RutaImagen").toString();
+
+        // Cargar la imagen y agregarla al panel
+        URL imageUrl = getClass().getClassLoader().getResource(rutaImagen);
+        if (imageUrl != null) {
+            ImageIcon imagen = new ImageIcon(imageUrl);
+            JLabel imagenLabel = new JLabel(imagen);
+            productoPanel.add(imagenLabel);
+            System.out.println("URL de la imagen: " + imageUrl);
+        } else {
+            System.out.println("No se pudo cargar la imagen: " + rutaImagen);
+        }
+
+        // Agregar etiquetas para los detalles del producto
+        productoPanel.add(new JLabel("ID: " + idProducto));
+        productoPanel.add(new JLabel("Nombre: " + nombre));
+        productoPanel.add(new JLabel("Precio: $" + precio));
+        productoPanel.add(new JLabel("Presentación: " + presentacion));
+
+        // Agregar botón de comprar
+        JButton comprarButton = new JButton("Comprar");
+        productoPanel.add(comprarButton);
+        return productoPanel;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -170,6 +231,37 @@ private Cliente cliente = new Cliente(this);
         tblProductos = new javax.swing.JTable();
         jpnProductos = new javax.swing.JScrollPane();
         jPanel6 = new javax.swing.JPanel();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tblPollo = new javax.swing.JTable();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblCerdo = new javax.swing.JTable();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        tblRes = new javax.swing.JTable();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        tblMariscos = new javax.swing.JTable();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        tblFrutas = new javax.swing.JTable();
+        jScrollPane12 = new javax.swing.JScrollPane();
+        tblVerduras = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tblEmbutidos = new javax.swing.JTable();
+        jPanel7 = new javax.swing.JPanel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jpPollo = new javax.swing.JPanel();
+        jScrollPane13 = new javax.swing.JScrollPane();
+        jpRes = new javax.swing.JPanel();
+        jScrollPane14 = new javax.swing.JScrollPane();
+        jpCerdo = new javax.swing.JPanel();
+        jScrollPane15 = new javax.swing.JScrollPane();
+        jpMariscos = new javax.swing.JPanel();
+        jScrollPane16 = new javax.swing.JScrollPane();
+        jpFrutas = new javax.swing.JPanel();
+        jScrollPane17 = new javax.swing.JScrollPane();
+        jpVerduras = new javax.swing.JPanel();
+        jScrollPane18 = new javax.swing.JScrollPane();
+        jpEmbutidos = new javax.swing.JPanel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -404,15 +496,7 @@ private Cliente cliente = new Cliente(this);
             new String [] {
                 "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane1.setViewportView(tblProductos);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -423,25 +507,250 @@ private Cliente cliente = new Cliente(this);
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Carnes", jPanel2);
+
+        tblPollo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane7.setViewportView(tblPollo);
+
+        jTabbedPane2.addTab("Pollo", jScrollPane7);
+
+        tblCerdo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane8.setViewportView(tblCerdo);
+
+        jTabbedPane2.addTab("Cerdo", jScrollPane8);
+
+        tblRes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane9.setViewportView(tblRes);
+
+        jTabbedPane2.addTab("Res", jScrollPane9);
+
+        tblMariscos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane10.setViewportView(tblMariscos);
+
+        jTabbedPane2.addTab("Mariscos", jScrollPane10);
+
+        tblFrutas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane11.setViewportView(tblFrutas);
+
+        jTabbedPane2.addTab("Frutas", jScrollPane11);
+
+        tblVerduras.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane12.setViewportView(tblVerduras);
+
+        jTabbedPane2.addTab("Verduras", jScrollPane12);
+
+        tblEmbutidos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Precio", "Presentación", "id_proveedor", " id_categoria", "id_marca"
+            }
+        ));
+        jScrollPane6.setViewportView(tblEmbutidos);
+
+        jTabbedPane2.addTab("Embutidos", jScrollPane6);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 989, Short.MAX_VALUE)
+            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 989, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 435, Short.MAX_VALUE)
+            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
         );
 
         jpnProductos.setViewportView(jPanel6);
 
         jTabbedPane1.addTab("Producto", jpnProductos);
+
+        javax.swing.GroupLayout jpPolloLayout = new javax.swing.GroupLayout(jpPollo);
+        jpPollo.setLayout(jpPolloLayout);
+        jpPolloLayout.setHorizontalGroup(
+            jpPolloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpPolloLayout.setVerticalGroup(
+            jpPolloLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane5.setViewportView(jpPollo);
+
+        jTabbedPane3.addTab("tab1", jScrollPane5);
+
+        javax.swing.GroupLayout jpResLayout = new javax.swing.GroupLayout(jpRes);
+        jpRes.setLayout(jpResLayout);
+        jpResLayout.setHorizontalGroup(
+            jpResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpResLayout.setVerticalGroup(
+            jpResLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane13.setViewportView(jpRes);
+
+        jTabbedPane3.addTab("tab2", jScrollPane13);
+
+        javax.swing.GroupLayout jpCerdoLayout = new javax.swing.GroupLayout(jpCerdo);
+        jpCerdo.setLayout(jpCerdoLayout);
+        jpCerdoLayout.setHorizontalGroup(
+            jpCerdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpCerdoLayout.setVerticalGroup(
+            jpCerdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane14.setViewportView(jpCerdo);
+
+        jTabbedPane3.addTab("tab3", jScrollPane14);
+
+        javax.swing.GroupLayout jpMariscosLayout = new javax.swing.GroupLayout(jpMariscos);
+        jpMariscos.setLayout(jpMariscosLayout);
+        jpMariscosLayout.setHorizontalGroup(
+            jpMariscosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpMariscosLayout.setVerticalGroup(
+            jpMariscosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane15.setViewportView(jpMariscos);
+
+        jTabbedPane3.addTab("tab4", jScrollPane15);
+
+        javax.swing.GroupLayout jpFrutasLayout = new javax.swing.GroupLayout(jpFrutas);
+        jpFrutas.setLayout(jpFrutasLayout);
+        jpFrutasLayout.setHorizontalGroup(
+            jpFrutasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpFrutasLayout.setVerticalGroup(
+            jpFrutasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane16.setViewportView(jpFrutas);
+
+        jTabbedPane3.addTab("tab5", jScrollPane16);
+
+        javax.swing.GroupLayout jpVerdurasLayout = new javax.swing.GroupLayout(jpVerduras);
+        jpVerduras.setLayout(jpVerdurasLayout);
+        jpVerdurasLayout.setHorizontalGroup(
+            jpVerdurasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpVerdurasLayout.setVerticalGroup(
+            jpVerdurasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane17.setViewportView(jpVerduras);
+
+        jTabbedPane3.addTab("tab6", jScrollPane17);
+
+        javax.swing.GroupLayout jpEmbutidosLayout = new javax.swing.GroupLayout(jpEmbutidos);
+        jpEmbutidos.setLayout(jpEmbutidosLayout);
+        jpEmbutidosLayout.setHorizontalGroup(
+            jpEmbutidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 989, Short.MAX_VALUE)
+        );
+        jpEmbutidosLayout.setVerticalGroup(
+            jpEmbutidosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 412, Short.MAX_VALUE)
+        );
+
+        jScrollPane18.setViewportView(jpEmbutidos);
+
+        jTabbedPane3.addTab("tab7", jScrollPane18);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTabbedPane3)
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 445, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("tab4", jPanel7);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -477,49 +786,49 @@ private Cliente cliente = new Cliente(this);
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         int selectedRow = tblClientes.getSelectedRow();
         if (selectedRow != -1) {
-        String cedula = tblClientes.getValueAt(selectedRow, 1).toString();
-        String nombre = tblClientes.getValueAt(selectedRow, 2).toString();
-        String primerA = tblClientes.getValueAt(selectedRow, 3).toString();
-        String segundoA = tblClientes.getValueAt(selectedRow, 4).toString();
-        String telefono = tblClientes.getValueAt(selectedRow, 5).toString();
-        String correo = tblClientes.getValueAt(selectedRow, 6).toString();
-        if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre) && Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
-            // Obtén el id del cliente seleccionado
-            int idClienteAActualizar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
-            // Actualiza el cliente con la información de la tabla
-            cliente.actualizar_cliente(
-                idClienteAActualizar,
-                cedula,
-                nombre,
-                primerA,
-                segundoA,
-                telefono,
-                correo
-            );
-            // Actualizar la tabla después de la actualización
-            actualizarTablaCliente();
-            // Limpiar campos y mostrar mensaje de éxito
-            limpiarCampos();
-            JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.");
+            String cedula = tblClientes.getValueAt(selectedRow, 1).toString();
+            String nombre = tblClientes.getValueAt(selectedRow, 2).toString();
+            String primerA = tblClientes.getValueAt(selectedRow, 3).toString();
+            String segundoA = tblClientes.getValueAt(selectedRow, 4).toString();
+            String telefono = tblClientes.getValueAt(selectedRow, 5).toString();
+            String correo = tblClientes.getValueAt(selectedRow, 6).toString();
+            if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre) && Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
+                // Obtén el id del cliente seleccionado
+                int idClienteAActualizar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
+                // Actualiza el cliente con la información de la tabla
+                cliente.actualizar_cliente(
+                        idClienteAActualizar,
+                        cedula,
+                        nombre,
+                        primerA,
+                        segundoA,
+                        telefono,
+                        correo
+                );
+                // Actualizar la tabla después de la actualización
+                actualizarTablaCliente();
+                // Limpiar campos y mostrar mensaje de éxito
+                limpiarCampos();
+                JOptionPane.showMessageDialog(this, "Cliente actualizado exitosamente.");
+            } else {
+                // Mostrar un mensaje de error para los datos no válidos
+                JOptionPane.showMessageDialog(this, "Los datos ingresados no son válidos.");
+            }
         } else {
-            // Mostrar un mensaje de error para los datos no válidos
-            JOptionPane.showMessageDialog(this, "Los datos ingresados no son válidos.");
+            // Mostrar un mensaje de error para la selección
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente para actualizar.");
         }
-    } else {
-        // Mostrar un mensaje de error para la selección
-        JOptionPane.showMessageDialog(this, "Seleccione un cliente para actualizar.");
-    }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int selectedRow = tblClientes.getSelectedRow();
         if (selectedRow != -1) {
-        int idClienteAEliminar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
-        cliente.eliminar_cliente(idClienteAEliminar);
+            int idClienteAEliminar = Integer.parseInt(tblClientes.getValueAt(selectedRow, 0).toString());
+            cliente.eliminar_cliente(idClienteAEliminar);
 
-        // Actualizar la tabla después de eliminar el cliente
-        actualizarTablaCliente();
-        limpiarCampos();
+            // Actualizar la tabla después de eliminar el cliente
+            actualizarTablaCliente();
+            limpiarCampos();
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -562,26 +871,25 @@ private Cliente cliente = new Cliente(this);
         nuevoCliente.setCorreo(correo);
 
         // Guardar el cliente y actualizar la tabla solo si la validación fue exitosa
-        if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre)&& Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
+        if (Validar.validarTelefono(telefono) && Validar.validarCedula(cedula) && Validar.validarNombre(nombre) && Validar.validarPrimerA(primerA) && Validar.validarSegundoA(segundoA)) {
             nuevoCliente.guardarCliente();
             actualizarTablaCliente();
             limpiarCampos();
             activarPaneles();
-            } else {
-        JOptionPane.showMessageDialog(this, "Algunos datos ingresados no son válidos: ");
- 
+        } else {
+            JOptionPane.showMessageDialog(this, "Algunos datos ingresados no son válidos: ");
+
         }
     }//GEN-LAST:event_btnAñadirClienteActionPerformed
 
     private void tblClientesPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tblClientesPropertyChange
-                                         
-    int row = tblClientes.getSelectedRow();
-    int column = tblClientes.getSelectedColumn();
-    if (column != -1 && row != -1) {
-        String newValue = tblClientes.getValueAt(row, column).toString();
-        String columnName = tblClientes.getColumnName(column);
-        tblClientes.getModel().setValueAt(newValue, row, column);
-    }
+        int row = tblClientes.getSelectedRow();
+        int column = tblClientes.getSelectedColumn();
+        if (column != -1 && row != -1) {
+            String newValue = tblClientes.getValueAt(row, column).toString();
+            String columnName = tblClientes.getColumnName(column);
+            tblClientes.getModel().setValueAt(newValue, row, column);
+        }
     }//GEN-LAST:event_tblClientesPropertyChange
 
 
@@ -604,14 +912,45 @@ private Cliente cliente = new Cliente(this);
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane12;
+    private javax.swing.JScrollPane jScrollPane13;
+    private javax.swing.JScrollPane jScrollPane14;
+    private javax.swing.JScrollPane jScrollPane15;
+    private javax.swing.JScrollPane jScrollPane16;
+    private javax.swing.JScrollPane jScrollPane17;
+    private javax.swing.JScrollPane jScrollPane18;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JPanel jpCerdo;
+    private javax.swing.JPanel jpEmbutidos;
+    private javax.swing.JPanel jpFrutas;
+    private javax.swing.JPanel jpMariscos;
+    private javax.swing.JPanel jpPollo;
+    private javax.swing.JPanel jpRes;
+    private javax.swing.JPanel jpVerduras;
     private javax.swing.JScrollPane jpnProductos;
+    private javax.swing.JTable tblCerdo;
     private javax.swing.JTable tblClientes;
+    private javax.swing.JTable tblEmbutidos;
+    private javax.swing.JTable tblFrutas;
+    private javax.swing.JTable tblMariscos;
+    private javax.swing.JTable tblPollo;
     private javax.swing.JTable tblProductos;
+    private javax.swing.JTable tblRes;
+    private javax.swing.JTable tblVerduras;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtNombre;

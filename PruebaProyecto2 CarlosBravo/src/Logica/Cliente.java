@@ -25,6 +25,7 @@ import org.json.simple.parser.ParseException;
  * @author Bravo
  */
 public class Cliente {
+
     private int id;
     private String cedula;
     private String nombre;
@@ -34,9 +35,10 @@ public class Cliente {
     private String correo;
     private Interfaz interfaz;
     private static final HashSet<Integer> idsGenerados = new HashSet<>();
-    
-    public Cliente(){}
-    
+
+    public Cliente() {
+    }
+
     public Cliente(Interfaz interfaz) {
         this.interfaz = interfaz;
     }
@@ -138,95 +140,93 @@ public class Cliente {
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-    
-   // Método para guardar un cliente en el archivo JSON de clientes
-public void guardarCliente() {
-    try {
-        // Verificar si el archivo JSON existe, si no, crear uno nuevo
-        File archivoJSON = new File("Cliente.json");
 
-        if (!archivoJSON.exists()) {
-            archivoJSON.createNewFile();
-            JSONArray clientesArrayVacio = new JSONArray();
-            FileWriter fileWriter = new FileWriter(archivoJSON);
-            fileWriter.write(clientesArrayVacio.toJSONString());
+    // Método para guardar un cliente en el archivo JSON de clientes
+    public void guardarCliente() {
+        try {
+            // Verificar si el archivo JSON existe, si no, crear uno nuevo
+            File archivoJSON = new File("Cliente.json");
+
+            if (!archivoJSON.exists()) {
+                archivoJSON.createNewFile();
+                JSONArray clientesArrayVacio = new JSONArray();
+                FileWriter fileWriter = new FileWriter(archivoJSON);
+                fileWriter.write(clientesArrayVacio.toJSONString());
+                fileWriter.flush();
+                fileWriter.close();
+            }
+
+            // Leer el archivo JSON de clientes
+            JSONParser parser = new JSONParser();
+            JSONArray clientesArray = (JSONArray) parser.parse(new FileReader(archivoJSON));
+
+            // Verificar si el cliente con la misma cédula ya existe en el archivo
+            for (Object obj : clientesArray) {
+                JSONObject clienteJSON = (JSONObject) obj;
+                String cedulaCliente = clienteJSON.get("cedula").toString();
+                if (cedulaCliente.equals(cedula)) {
+                    System.out.println("Ya existe un cliente con la cédula " + cedula);
+                    return; // Salir del método sin agregar el cliente duplicado
+                }
+            }
+
+            // Crear el objeto JSON del nuevo cliente
+            JSONObject clienteJSON = new JSONObject();
+            clienteJSON.put("id", id);
+            clienteJSON.put("cedula", cedula);
+            clienteJSON.put("nombre", nombre);
+            clienteJSON.put("primer_apellido", primer_apellido);
+            clienteJSON.put("segundo_apellido", segundo_apellido);
+            clienteJSON.put("telefono", telefono);
+            clienteJSON.put("correo", correo);
+
+            // Agregar el nuevo cliente al array de clientes
+            clientesArray.add(clienteJSON);
+
+            // Escribir el array actualizado de clientes en el archivo JSON de clientes
+            FileWriter fileWriter = new FileWriter("Cliente.json");
+            fileWriter.write(clientesArray.toJSONString());
             fileWriter.flush();
             fileWriter.close();
-        }
 
-        // Leer el archivo JSON de clientes
-        JSONParser parser = new JSONParser();
-        JSONArray clientesArray = (JSONArray) parser.parse(new FileReader(archivoJSON));
+            System.out.println("Cliente guardado exitosamente.");
 
-        // Verificar si el cliente con la misma cédula ya existe en el archivo
-        for (Object obj : clientesArray) {
-            JSONObject clienteJSON = (JSONObject) obj;
-            String cedulaCliente = clienteJSON.get("cedula").toString();
-            if (cedulaCliente.equals(cedula)) {
-                System.out.println("Ya existe un cliente con la cédula " + cedula);
-                return; // Salir del método sin agregar el cliente duplicado
-            }
-        }
+            //imprimir la ubicación del archivo json
+            //System.out.println("Ruta del archivo JSON: " + archivoJSON.getAbsolutePath());
+            interfaz.actualizarTablaCliente();
 
-        // Crear el objeto JSON del nuevo cliente
-        JSONObject clienteJSON = new JSONObject();
-        clienteJSON.put("id", id);
-        clienteJSON.put("cedula", cedula);
-        clienteJSON.put("nombre", nombre);
-        clienteJSON.put("primer_apellido", primer_apellido);
-        clienteJSON.put("segundo_apellido", segundo_apellido);
-        clienteJSON.put("telefono", telefono);
-        clienteJSON.put("correo", correo);
-
-        // Agregar el nuevo cliente al array de clientes
-        clientesArray.add(clienteJSON);
-
-        // Escribir el array actualizado de clientes en el archivo JSON de clientes
-        FileWriter fileWriter = new FileWriter("Cliente.json");
-        fileWriter.write(clientesArray.toJSONString());
-        fileWriter.flush();
-        fileWriter.close();
-
-        System.out.println("Cliente guardado exitosamente.");
-
-        //imprimir la ubicación del archivo json
-        //System.out.println("Ruta del archivo JSON: " + archivoJSON.getAbsolutePath());
-        interfaz.actualizarTablaCliente();
-
-    } catch (IOException | ParseException e) {
-        e.printStackTrace();
-    }
-}
-    
-    public void mostrarCliente() throws ParseException {
-    try {
-        // Leer el archivo JSON de la categoría
-        JSONParser parser = new JSONParser();
-        JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
-
-        // Mostrar los productos
-        System.out.println("Clientes ");
-        for (Object obj : clientesArray) {
-            JSONObject clientesJSON = (JSONObject) obj;
-            System.out.println("ID: " + clientesJSON.get("id"));
-            System.out.println("Cedula: " + clientesJSON.get("cedula"));
-            System.out.println("Nombre: " + clientesJSON.get("nombre"));
-            System.out.println("Primer apellido : " + clientesJSON.get("primer_apellido"));
-            System.out.println("Segundo apellido: " + clientesJSON.get("segundo_apellido"));
-            System.out.println("Telefono : " + clientesJSON.get("telefono"));
-            System.out.println("Correo : " + clientesJSON.get("correo"));
-            System.out.println("---------------------------");
-        }
-        
-        // Imprimir el contenido completo del archivo JSON
-        //System.out.println(clientesArray.toJSONString());
-        
-        
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
-    
+
+    public void mostrarCliente() throws ParseException {
+        try {
+            // Leer el archivo JSON de la categoría
+            JSONParser parser = new JSONParser();
+            JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
+
+            // Mostrar los productos
+            System.out.println("Clientes ");
+            for (Object obj : clientesArray) {
+                JSONObject clientesJSON = (JSONObject) obj;
+                System.out.println("ID: " + clientesJSON.get("id"));
+                System.out.println("Cedula: " + clientesJSON.get("cedula"));
+                System.out.println("Nombre: " + clientesJSON.get("nombre"));
+                System.out.println("Primer apellido : " + clientesJSON.get("primer_apellido"));
+                System.out.println("Segundo apellido: " + clientesJSON.get("segundo_apellido"));
+                System.out.println("Telefono : " + clientesJSON.get("telefono"));
+                System.out.println("Correo : " + clientesJSON.get("correo"));
+                System.out.println("---------------------------");
+            }
+
+            // Imprimir el contenido completo del archivo JSON
+            //System.out.println(clientesArray.toJSONString());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void actualizarTabla(DefaultTableModel modeloTabla) {
         try {
             // Leer el archivo JSON de clientes
@@ -241,11 +241,11 @@ public void guardarCliente() {
                 JSONObject clienteJSON = (JSONObject) obj;
                 int Id = Integer.parseInt(clienteJSON.get("id").toString());
                 String Cedula = clienteJSON.get("cedula") != null ? clienteJSON.get("cedula").toString() : "";
-                String Nombre = clienteJSON.get("nombre") != null ? clienteJSON.get("nombre").toString() : "";   
-                String Primer_apellido = clienteJSON.get("primer_apellido") != null ? clienteJSON.get("primer_apellido").toString() : "";   
-                String Segundo_apellido = clienteJSON.get("segundo_apellido") != null ? clienteJSON.get("segundo_apellido").toString() : "";   
-                String Telefono = clienteJSON.get("telefono") != null ? clienteJSON.get("telefono").toString() : "";   
-                String Correo = clienteJSON.get("correo") != null ? clienteJSON.get("correo").toString() : "";    
+                String Nombre = clienteJSON.get("nombre") != null ? clienteJSON.get("nombre").toString() : "";
+                String Primer_apellido = clienteJSON.get("primer_apellido") != null ? clienteJSON.get("primer_apellido").toString() : "";
+                String Segundo_apellido = clienteJSON.get("segundo_apellido") != null ? clienteJSON.get("segundo_apellido").toString() : "";
+                String Telefono = clienteJSON.get("telefono") != null ? clienteJSON.get("telefono").toString() : "";
+                String Correo = clienteJSON.get("correo") != null ? clienteJSON.get("correo").toString() : "";
                 modeloTabla.addRow(new Object[]{Id, Cedula, Nombre, Primer_apellido, Segundo_apellido, Telefono, Correo});
             }
         } catch (IOException | ParseException e) {
@@ -254,96 +254,97 @@ public void guardarCliente() {
         }
     }
     // Método para actualizar la información de un cliente existente
-public void actualizar_cliente(int id, String cedula, String nombre, String primer_apellido, String segundo_apellido, String telefono, String correo) {
-    try {
-        // Leer el archivo JSON de clientes
-        JSONParser parser = new JSONParser();
-        JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
-        // Buscar el cliente con el ID especificado
-        boolean clienteEncontrado = false;
-        for (Object obj : clientesArray) {
-            JSONObject clienteJSON = (JSONObject) obj;
-            int clienteId = Integer.parseInt(clienteJSON.get("id").toString());
 
-            if (clienteId == id) {
-                // Actualizar la información del cliente si los campos de texto no están en blanco
-                if (!cedula.isEmpty()) {
-                    clienteJSON.put("cedula", cedula);
-                }
-                if (!nombre.isEmpty()) {
-                    clienteJSON.put("nombre", nombre);
-                }
-                if (!primer_apellido.isEmpty()) {
-                    clienteJSON.put("primer_apellido", primer_apellido);
-                }
-                if (!segundo_apellido.isEmpty()) {
-                    clienteJSON.put("segundo_apellido", segundo_apellido);
-                }
-                if (!telefono.isEmpty()) {
-                    clienteJSON.put("telefono", telefono);
-                }
-                if (!correo.isEmpty()) {
-                    clienteJSON.put("correo", correo);
-                }
+    public void actualizar_cliente(int id, String cedula, String nombre, String primer_apellido, String segundo_apellido, String telefono, String correo) {
+        try {
+            // Leer el archivo JSON de clientes
+            JSONParser parser = new JSONParser();
+            JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
+            // Buscar el cliente con el ID especificado
+            boolean clienteEncontrado = false;
+            for (Object obj : clientesArray) {
+                JSONObject clienteJSON = (JSONObject) obj;
+                int clienteId = Integer.parseInt(clienteJSON.get("id").toString());
 
-                clienteEncontrado = true;
-                break; // Salir del bucle una vez que se actualizó el cliente
+                if (clienteId == id) {
+                    // Actualizar la información del cliente si los campos de texto no están en blanco
+                    if (!cedula.isEmpty()) {
+                        clienteJSON.put("cedula", cedula);
+                    }
+                    if (!nombre.isEmpty()) {
+                        clienteJSON.put("nombre", nombre);
+                    }
+                    if (!primer_apellido.isEmpty()) {
+                        clienteJSON.put("primer_apellido", primer_apellido);
+                    }
+                    if (!segundo_apellido.isEmpty()) {
+                        clienteJSON.put("segundo_apellido", segundo_apellido);
+                    }
+                    if (!telefono.isEmpty()) {
+                        clienteJSON.put("telefono", telefono);
+                    }
+                    if (!correo.isEmpty()) {
+                        clienteJSON.put("correo", correo);
+                    }
+
+                    clienteEncontrado = true;
+                    break; // Salir del bucle una vez que se actualizó el cliente
+                }
             }
-        }
 
-        if (clienteEncontrado) {
-            // Escribir el array actualizado de clientes en el archivo JSON
-            FileWriter fileWriter = new FileWriter("Cliente.json");
-            fileWriter.write(clientesArray.toJSONString());
-            fileWriter.flush();
-            fileWriter.close();
-            System.out.println("Cliente actualizado exitosamente.");
-        } else {
-            System.out.println("No se encontró un cliente con el ID " + id);
+            if (clienteEncontrado) {
+                // Escribir el array actualizado de clientes en el archivo JSON
+                FileWriter fileWriter = new FileWriter("Cliente.json");
+                fileWriter.write(clientesArray.toJSONString());
+                fileWriter.flush();
+                fileWriter.close();
+                System.out.println("Cliente actualizado exitosamente.");
+            } else {
+                System.out.println("No se encontró un cliente con el ID " + id);
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
-    } catch (IOException | ParseException e) {
-        e.printStackTrace();
     }
-}
 
 // Método para eliminar un cliente del JSON mediante su ID
-public void eliminar_cliente(int id) {
-    try {
-        // Leer el archivo JSON de clientes
-        JSONParser parser = new JSONParser();
-        JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
-        
-        List<Integer> indicesAEliminar = new ArrayList<>();
-        // Buscar el cliente con el ID especificado
-        boolean clienteEncontrado = false;
-        for (int i = 0; i < clientesArray.size(); i++) {
-            JSONObject clienteJSON = (JSONObject) clientesArray.get(i);
-            int clienteId = Integer.parseInt(clienteJSON.get("id").toString());
+    public void eliminar_cliente(int id) {
+        try {
+            // Leer el archivo JSON de clientes
+            JSONParser parser = new JSONParser();
+            JSONArray clientesArray = (JSONArray) parser.parse(new FileReader("Cliente.json"));
 
-            if (clienteId == id) {
-                indicesAEliminar.add(i);
-                clienteEncontrado = true;
-            }
-        }
-        if (clienteEncontrado) {
-            // Eliminar los clientes con los IDs indicados del JSON
-            for (int i : indicesAEliminar) {
-                clientesArray.remove(i);
-            }
-            // Escribir el array actualizado de clientes en el archivo JSON
-            FileWriter fileWriter = new FileWriter("Cliente.json");
-            fileWriter.write(clientesArray.toJSONString());
-            fileWriter.flush();
-            fileWriter.close();
+            List<Integer> indicesAEliminar = new ArrayList<>();
+            // Buscar el cliente con el ID especificado
+            boolean clienteEncontrado = false;
+            for (int i = 0; i < clientesArray.size(); i++) {
+                JSONObject clienteJSON = (JSONObject) clientesArray.get(i);
+                int clienteId = Integer.parseInt(clienteJSON.get("id").toString());
 
-            System.out.println("Cliente eliminado exitosamente.");
-        } else {
-            System.out.println("No se encontró un cliente con el ID " + id);
+                if (clienteId == id) {
+                    indicesAEliminar.add(i);
+                    clienteEncontrado = true;
+                }
+            }
+            if (clienteEncontrado) {
+                // Eliminar los clientes con los IDs indicados del JSON
+                for (int i : indicesAEliminar) {
+                    clientesArray.remove(i);
+                }
+                // Escribir el array actualizado de clientes en el archivo JSON
+                FileWriter fileWriter = new FileWriter("Cliente.json");
+                fileWriter.write(clientesArray.toJSONString());
+                fileWriter.flush();
+                fileWriter.close();
+
+                System.out.println("Cliente eliminado exitosamente.");
+            } else {
+                System.out.println("No se encontró un cliente con el ID " + id);
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
         }
-    } catch (IOException | ParseException e) {
-        e.printStackTrace();
     }
-}
 
     // Método para verificar que no exista otro cliente con la misma cédula
     public boolean validar_cliente(String cedula) {
@@ -368,7 +369,8 @@ public void eliminar_cliente(int id) {
 
         return true; // No se encontró otro cliente con la misma cédula
     }
-       // Método para generar un ID aleatorio y verificar su disponibilidad
+    // Método para generar un ID aleatorio y verificar su disponibilidad
+
     public int generarIdAleatorio() {
         // Generar un ID aleatorio entre 1 y 1000
         Random random = new Random();
@@ -408,32 +410,23 @@ public void eliminar_cliente(int id) {
 
     //solo en caso de emergencia jaja
     public void vaciarClientes() {
-    try {
-        // Crear un nuevo archivo JSON vacío para reemplazar el archivo existente
-        File archivoJSON = new File("Cliente.json");
-        archivoJSON.createNewFile();
+        try {
+            // Crear un nuevo archivo JSON vacío para reemplazar el archivo existente
+            File archivoJSON = new File("Cliente.json");
 
-        // Escribir un array JSON vacío en el nuevo archivo
-        JSONArray clientesArrayVacio = new JSONArray();
-        FileWriter fileWriter = new FileWriter(archivoJSON);
-        fileWriter.write(clientesArrayVacio.toJSONString());
-        fileWriter.flush();
-        fileWriter.close();
+            // Escribir un array JSON vacío en el nuevo archivo
+            JSONArray clientesArrayVacio = new JSONArray();
+            FileWriter fileWriter = new FileWriter(archivoJSON);
+            archivoJSON.createNewFile();
 
-        System.out.println("El archivo JSON de clientes ha sido vaciado.");
+            fileWriter.write(clientesArrayVacio.toJSONString());
+            fileWriter.flush();
+            fileWriter.close();
 
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+            System.out.println("El archivo JSON de clientes ha sido vaciado.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-

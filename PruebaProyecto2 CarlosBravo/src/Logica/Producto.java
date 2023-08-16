@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Logica;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileReader;
@@ -14,6 +15,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Producto {
+
     private int id;
     private String nombre;
     private double precio;
@@ -121,19 +123,33 @@ public class Producto {
         this.id_marca = id_marca;
     }
 
+    /**
+     * @return the rutaImagen
+     */
+    public String getRutaImagen() {
+        return rutaImagen;
+    }
+
+    /**
+     * @param rutaImagen the rutaImagen to set
+     */
+    public void setRutaImagen(String rutaImagen) {
+        this.rutaImagen = rutaImagen;
+    }
+
     // Método para guardar un producto en el archivo JSON correspondiente a la categoría
     public void guardarProducto(String categoria) {
-     try {
+        try {
             // Verificar si el archivo JSON existe, si no, crear uno nuevo
             File archivoJSON = new File(categoria + ".json");
-            
+
             if (!archivoJSON.exists()) {
                 archivoJSON.createNewFile();
                 JSONArray productosArrayVacio = new JSONArray();
                 FileWriter fileWriter = new FileWriter(archivoJSON);
                 fileWriter.write(productosArrayVacio.toJSONString());
                 fileWriter.flush();
-                fileWriter.close();   
+                fileWriter.close();
             }
 
             // Leer el archivo JSON de la categoría
@@ -171,10 +187,10 @@ public class Producto {
             fileWriter.close();
 
             System.out.println("Producto guardado exitosamente.");
-            
+
             //imprimir la ubicacion del archivo json
             System.out.println("Ruta del archivo JSON: " + archivoJSON.getAbsolutePath());
-            
+
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -187,72 +203,72 @@ public class Producto {
             JSONParser parser = new JSONParser();
             JSONArray productosArray = (JSONArray) parser.parse(new FileReader(categoria + ".json"));
 
-        // Mostrar los productos
-        System.out.println("Productos en la categoria \"" + categoria + "\":");
-        for (Object obj : productosArray) {
-            JSONObject productoJSON = (JSONObject) obj;
-            System.out.println("ID: " + productoJSON.get("id"));
-            System.out.println("Nombre: " + productoJSON.get("nombre"));
-            System.out.println("Precio: " + productoJSON.get("precio"));
-            System.out.println("Presentacion: " + productoJSON.get("presentacion"));
-            System.out.println("ID Proveedor: " + productoJSON.get("id_proveedor"));
-            System.out.println("ID Categoria: " + productoJSON.get("id_categoria"));
-            System.out.println("ID Marca: " + productoJSON.get("id_marca"));
-            System.out.println("---------------------------");
-        }
-        
-        // Vaciar el archivo JSON correspondiente a la categoría para eliminar los productos previos
-        //FileWriter fileWriter = new FileWriter(categoria + ".json");
-        //fileWriter.write("[]");
-        //fileWriter.flush();
-        //fileWriter.close();
-        
-        // Imprimir el contenido completo del archivo JSON
-        System.out.println(productosArray.toJSONString());
-        
+            // Mostrar los productos
+            System.out.println("Productos en la categoria \"" + categoria + "\":");
+            for (Object obj : productosArray) {
+                JSONObject productoJSON = (JSONObject) obj;
+                System.out.println("ID: " + productoJSON.get("id"));
+                System.out.println("Nombre: " + productoJSON.get("nombre"));
+                System.out.println("Precio: " + productoJSON.get("precio"));
+                System.out.println("Presentacion: " + productoJSON.get("presentacion"));
+                System.out.println("ID Proveedor: " + productoJSON.get("id_proveedor"));
+                System.out.println("ID Categoria: " + productoJSON.get("id_categoria"));
+                System.out.println("ID Marca: " + productoJSON.get("id_marca"));
+                System.out.println("---------------------------");
+            }
+
+            //Vaciar el archivo JSON correspondiente a la categoría para eliminar los productos previos
+            //FileWriter fileWriter = new FileWriter(categoria + ".json");
+            //fileWriter.write("[]");
+            //fileWriter.flush();
+            //fileWriter.close();
+            // Imprimir el contenido completo del archivo JSON
+            System.out.println(productosArray.toJSONString());
+
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
     }
-    
+
+    // Función para agregar un producto al modelo de tabla
+    private void agregarProductoATabla(DefaultTableModel modeloTabla, JSONObject productoJSON) {
+        int id = Integer.parseInt(productoJSON.get("id").toString());
+        String nombre = productoJSON.get("nombre").toString();
+        double precio = Double.parseDouble(productoJSON.get("precio").toString());
+        String presentacion = productoJSON.get("presentacion").toString();
+        int id_proveedor = Integer.parseInt(productoJSON.get("id_proveedor").toString());
+        int id_categoria = Integer.parseInt(productoJSON.get("id_categoria").toString());
+        int id_marca = Integer.parseInt(productoJSON.get("id_marca").toString());
+
+        modeloTabla.addRow(new Object[]{id, nombre, precio, presentacion, id_proveedor, id_categoria, id_marca});
+    }
+
     public void actualizarTabla(DefaultTableModel modeloTabla, String categoria) {
         try {
-            // Leer el archivo JSON de la categoría
             JSONParser parser = new JSONParser();
-            JSONArray productosArray = (JSONArray) parser.parse(new FileReader(categoria + ".json"));
+            JSONObject rootObject = (JSONObject) parser.parse(new FileReader("C:/Users/Bravo/Documents/Prueba-Proyecto2/PruebaProyecto2 CarlosBravo/src/Logica/Productos.json"));
 
-            // Limpiar la tabla antes de agregar los nuevos datos
-            modeloTabla.setRowCount(0);
+            JSONObject categoriasObject = (JSONObject) rootObject.get("categorias");
+            JSONObject frescosObject = (JSONObject) categoriasObject.get("Frescos");
 
-            // Agregar los productos al modelo de tabla
-            for (Object obj : productosArray) {
-                JSONObject productoJSON = (JSONObject) obj;
-                int Id = Integer.parseInt(productoJSON.get("id").toString());
-                String Nombre = productoJSON.get("nombre").toString();
-                double Precio = Double.parseDouble(productoJSON.get("precio").toString());
-                String Presentacion = productoJSON.get("presentacion").toString();
-                int Id_proveedor = Integer.parseInt(productoJSON.get("id_proveedor").toString());
-                int Id_categoria = Integer.parseInt(productoJSON.get("id_categoria").toString());
-                int Id_marca = Integer.parseInt(productoJSON.get("id_marca").toString());
+            if (frescosObject.containsKey("subcategorias")) {
+                JSONObject subcategoriasObject = (JSONObject) frescosObject.get("subcategorias");
 
-                modeloTabla.addRow(new Object[]{Id, Nombre, Precio, Presentacion, Id_proveedor, Id_categoria, Id_marca});
+                if (subcategoriasObject.containsKey(categoria)) {
+                    Object subcategoriaValue = subcategoriasObject.get(categoria);
+
+                    if (subcategoriaValue instanceof JSONArray) {
+                        JSONArray productosArray = (JSONArray) subcategoriaValue;
+
+                        for (Object productoObj : productosArray) {
+                            JSONObject productoJSON = (JSONObject) productoObj;
+                            agregarProductoATabla(modeloTabla, productoJSON);
+                        }
+                    }
+                }
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @return the rutaImagen
-     */
-    public String getRutaImagen() {
-        return rutaImagen;
-    }
-
-    /**
-     * @param rutaImagen the rutaImagen to set
-     */
-    public void setRutaImagen(String rutaImagen) {
-        this.rutaImagen = rutaImagen;
     }
 }

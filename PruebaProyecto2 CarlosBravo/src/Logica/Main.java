@@ -2,7 +2,6 @@ package Logica;
 
 import GUI.Interfaz;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import org.json.simple.parser.ParseException;
 
 /*
@@ -48,22 +47,17 @@ public class Main {
         producto3.setRutaImagen("/Gatos/descarga (3).jpg");
         
         
-        producto1.guardarProducto("carnes");
-        producto2.guardarProducto("carnes");
-        producto3.guardarProducto("carnes");
+        //producto1.guardarProducto("carnes");
+        //producto2.guardarProducto("carnes");
+        //producto3.guardarProducto("carnes");
         producto1.mostrarProductos("carnes");
         
         Interfaz mostrar = new Interfaz();
         mostrar.setVisible(true);
         mostrar.setResizable(false);
         mostrar.setLocationRelativeTo(null);
-        
-        
-
-        // Cargar los productos y clientes en las tablas
-        mostrar.actualizarTablaProductos("carnes");
         mostrar.actualizarTablaCliente();
-        mostrar.mostrarProductosEnPanel("carnes");
+        mostrar.mostrarProductosEnPaneles("Frescos");
         
         
         //Cliente cliente = new Cliente();
